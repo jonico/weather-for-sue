@@ -1,0 +1,572 @@
+{
+	"info": {
+		"_postman_id": "840e614a-d38c-4a05-b152-0701fab17fba",
+		"name": "Weather for Sue: Trigger request depending on another",
+		"description": "## Welcome Sue <3\n\nWhen you can read this text you have either successfully imported our collection into your own workspace already, or you have followed the link in my e-mail and need to do one last step and [fork](https://learning.postman.com/docs/collaborating-in-postman/version-control/) this collection into your own workspace by [clicking on this link](https://www.postman.com/speeding-robot-691127/workspace/jonico/collection/22874692-840e614a-d38c-4a05-b152-0701fab17fba/fork?origin=sidebar).\n\n## Conditional weather for Sue - Or what is this collection about?\n\nIn this collection, we will show how to use Postman to trigger an API request that is dependent on the response of a previous API request. As discussed, we will use a simple, weather based example to demonstrate. When excecuted in the [Runner](https://learning.postman.com/docs/running-collections/intro-to-collection-runs), our collection\n\na) Retrieves the weather for San Francisco, USA  \nb) Tests to ensure the temperature is in a sensible range  \nc) If the temperature is over 60F, retrieve the weather for Bangalore, India  \nd) Else, retrieve the weather for London, UK\n\n## Possible ways to implement\n\nAs with any complex task, there are many ways to achieve the goal. We will outline three approaches, from which we have implemented approach #3. We implemented the last described approach as we believe it is the most appropriate for the example scenario, but still wanted to mention some meaningful alternatives for advanced use cases.\n\n### Most flexible approach #1 - Sending API requests directly from test scripts\n\nIn Postman's [node.js runtime](https://learning.postman.com/docs/writing-scripts/script-references/postman-sandbox-api-reference/) used by its test scripts, it is possible to [programatically invoke](https://learning.postman.com/docs/writing-scripts/script-references/postman-sandbox-api-reference/#sending-requests-from-scripts) arbitrary API requests based on previous conditions. A working example for this approach can be found [here](https://www.postman.com/speeding-robot-691127/workspace/jonico/documentation/22874692-37b6e818-7e99-4ccd-8332-959ca1f9eaef).\n\nIn the the weather example, we could have one request which is calling the weather in San Francisco a) and based on the result dynamically trigger the same API again using the `pm.sendRequest` method and the appropriate parameters for c) or d).\n\nAs in our example the API request to call is the same for c) and d), and only its parameters change (Bangalore or London), we will be using a simpler approach that makes it easier to test the three requests in isolation with standard Postman tooling.\n\n### Easiest approach #2 - Programatically pass variable content\n\nPostman has the ability to [programatically set](https://learning.postman.com/docs/sending-requests/variables/#defining-variables-in-scripts) environment and collection variables. A working example for this approach can be found [here](https://www.postman.com/speeding-robot-691127/workspace/jonico/documentation/22874692-37b6e818-7e99-4ccd-8332-959ca1f9eaef).\n\nIn the weather example case, it would be possible to create a Postman collection with two API requests\n\n1.  Get weather in San Francisco\n    \n\n2\\. Get weather in second city (London or Bangalore)\n\nwhereas a test in the first request would set a collection or environment variable *secondCity* that is used in the second request to decide for which city to retrieve the second temperature.\n\nWhile this approach is probably the shortest and cleanest with least code duplication, it only works as long as the dependent request only differs from its parameters. Imagine we would need to use a different API to retrieve the weather in Bangalore as opposed to London. We think that in your non-weather related production scenario, you will probably use an entire different API depending on the result of the first request, which would make our example too constrained to be of practical use. Hence we decided for a third, final approach that is making use of dynamic request flows.\n\n### Final approach #3 - Programatically influence the API request flow\n\nIf all possible requests and their parameters are known at test design time, we can tell Postman to only run the subset of requests that should be executed based on the response of the first request. This conditional workflow pattern is described more in detail [here](https://learning.postman.com/docs/running-collections/building-workflows/) and relies on dynamically setting the next response using `postman.setNextRequest()`.\n\nIn this collection, we have three requests\n\n1.  Get weather in San Francisco\n2.  Get weather in Bangalore\n3.  Get weather in London\n    \n\nThe first request has a test script that depending on the temperature in San Francisco, would either call `postman.setNextRequest(\"Get weather in Bangalore\")` or `postman.setNextRequest(\"Get weather in London\").`\n\nBoth the Bangalore and the London request have test scripts associated with them that call `postman.setNextRequest(null)` to tell the Postman not to execute any further requests afterwards. In a more complex settings, both requests would set a request as destination where the conditional workflow merges again.\n\n## Weather API used, API key and any other configurable variables\n\nThe API used in the examples to retrieve the weather is [OpenWeatherMap](https://openweathermap.org/). There is also a [public Postman collection](https://www.postman.com/api-evangelist/workspace/openweathermap/overview) available, although it is not officially operated by OpenWeatherMap. In order to use OpenWeatherMap, you need a free API key for which you can signup [here](https://openweathermap.org/home/sign_up).\n\nFor convenience purposes, we have already created an API KEY and included it as collection variable. In a production setting, you would never include an API key directly but only set it as the current value of a variable (also see [secret variable types](https://learning.postman.com/docs/sending-requests/variables/#variable-types) in Postman).\n\nIf you like to use your own API key, [navigate](https://learning.postman.com/docs/sending-requests/variables/#defining-collection-variables) to the *Variables* tab of your collection and modify it. Apart from the API key *appid*, there are some more variables you do not have to change but could play around with if you like:\n\n*   firstCity: First city to get temperature, default: London\n*   secondCity: Second city to get temperature, default: Bangalore\n*   thirdCity: Third city to get temperature, default: London\n*   temperatureThreshold: Temperature that decides whether to retrieve next temperature for second or third city, change the current value to experiment with alternative request orders, default: 60\n*   lowestTemp: Used in tests as a sanity check whether temperatures are in reasonable range, default: -40\n*   highestTemp: Used in tests as a sanity check whether temperatures are in reasonable range, default: 140\n*   baseUrl: OpenWeatherApp API base URL, default: [http://api.openweathermap.org/data/2.5](http://api.openweathermap.org/data/2.5)\n    \n\nFor simplicity reasons (fork everything you need with a single click), we have decided not to put those variables into an [environment](https://learning.postman.com/docs/sending-requests/managing-environments/), but for a production scenario where you like to test multiple variable pairs, we would recommend creating an environment like [this](https://www.postman.com/speeding-robot-691127/workspace/jonico/environment/22874692-686ccfa0-4564-40fe-a1a2-b7b2383260ce).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Examine requests and tests, run & experiment",
+			"item": [
+				{
+					"name": "Get weather for San Francisco",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "13ce220b-559f-4f3f-be7c-549003afd630",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"let city = pm.variables.get(\"firstCity\");",
+									"let temperature = pm.response.json().main.temp;",
+									"let lowestTemp = parseInt(pm.variables.get(\"lowestTemp\"));",
+									"let highestTemp = parseInt(pm.variables.get(\"highestTemp\"));",
+									"",
+									"",
+									"// test whether temperature is of type number",
+									"pm.test(\"Temperatures are of type number\", () => {",
+									"    pm.expect(temperature).to.be.a(\"number\");",
+									"})",
+									"",
+									"// test whether temperature is between lowestTemp and highestTemp",
+									"pm.test(\"Temperature is in a sensible range\", () => {",
+									"    pm.expect(temperature).to.be.at.least(lowestTemp);",
+									"    pm.expect(temperature).to.be.at.most(highestTemp);",
+									"})",
+									"",
+									"console.log(`Temperature in ${city} is ${temperature} °F`)",
+									"",
+									"let tempThreshold = parseInt(pm.variables.get(\"tempThreshold\"));",
+									"let secondCity = pm.variables.get(\"secondCity\");",
+									"let thirdCity = pm.variables.get(\"thirdCity\");",
+									"var message",
+									"",
+									"if (temperature > tempThreshold) {",
+									"    message = `Temperature is above threshold of ${tempThreshold} °F, this is quite hot, checking weather in ${secondCity} next ...`",
+									"    postman.setNextRequest(`Get weather for ${secondCity}`)",
+									"} else {",
+									"    message = `Temperature is below threshold of ${tempThreshold} °F, this is quite cold, checking weather in ${thirdCity} next ...`",
+									"    postman.setNextRequest(`Get weather for ${thirdCity}`)",
+									"}",
+									"",
+									"console.log(message)",
+									"pm.test(message, function () {",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"_postman_id": "420b3197-ba61-4a0e-8bb0-947e32048611",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/weather?q={{firstCity}}&appid={{appid}}&units=imperial",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"weather"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "{{firstCity}}",
+									"description": "**City name**. *Example: London*. You can call by city name, or by city name and country code. The API responds with a list of results that match a searching word. For the query value, type the city name and optionally the country code divided by a comma; use ISO 3166 country codes."
+								},
+								{
+									"key": "appid",
+									"value": "{{appid}}",
+									"description": "**API Key**. *Example: 52a17d91b3ed0697b05a7dd6fdc708c4*. API Keys are associated with developer accounts."
+								},
+								{
+									"key": "units",
+									"value": "imperial"
+								}
+							]
+						},
+						"description": "Access current weather data for first city, test whether temperature is in reasonable range and depending on the temperature threshold, ask Postman to execute the second or third request in the collection to be next."
+					},
+					"response": [
+						{
+							"id": "efa25dc4-b74a-4170-ae7b-03c3c94dc031",
+							"name": "Get weather for San Francisco",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/weather?q={{firstCity}}&appid={{appid}}&units=imperial",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"weather"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "{{firstCity}}",
+											"description": "**City name**. *Example: London*. You can call by city name, or by city name and country code. The API responds with a list of results that match a searching word. For the query value, type the city name and optionally the country code divided by a comma; use ISO 3166 country codes."
+										},
+										{
+											"key": "appid",
+											"value": "{{appid}}",
+											"description": "**API Key**. *Example: 52a17d91b3ed0697b05a7dd6fdc708c4*. API Keys are associated with developer accounts."
+										},
+										{
+											"key": "units",
+											"value": "imperial"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "openresty"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 02 Sep 2022 17:05:47 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "479"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Cache-Key",
+									"value": "/data/2.5/weather?q=san%20francisco&units=imperial"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET, POST"
+								}
+							],
+							"cookie": [],
+							"responseTime": null,
+							"body": "{\n    \"coord\": {\n        \"lon\": -122.4194,\n        \"lat\": 37.7749\n    },\n    \"weather\": [\n        {\n            \"id\": 801,\n            \"main\": \"Clouds\",\n            \"description\": \"few clouds\",\n            \"icon\": \"02d\"\n        }\n    ],\n    \"base\": \"stations\",\n    \"main\": {\n        \"temp\": 58.93,\n        \"feels_like\": 58.8,\n        \"temp_min\": 54.61,\n        \"temp_max\": 76.23,\n        \"pressure\": 1012,\n        \"humidity\": 91\n    },\n    \"visibility\": 10000,\n    \"wind\": {\n        \"speed\": 13.8,\n        \"deg\": 310\n    },\n    \"clouds\": {\n        \"all\": 20\n    },\n    \"dt\": 1662138131,\n    \"sys\": {\n        \"type\": 2,\n        \"id\": 2017837,\n        \"country\": \"US\",\n        \"sunrise\": 1662126051,\n        \"sunset\": 1662172693\n    },\n    \"timezone\": -25200,\n    \"id\": 5391959,\n    \"name\": \"San Francisco\",\n    \"cod\": 200\n}"
+						}
+					]
+				},
+				{
+					"name": "Get weather for Bangalore",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "13ce220b-559f-4f3f-be7c-549003afd630",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"let city = pm.variables.get(\"secondCity\");",
+									"let temperature = pm.response.json().main.temp;",
+									"let lowestTemp = parseInt(pm.variables.get(\"lowestTemp\"));",
+									"let highestTemp = parseInt(pm.variables.get(\"highestTemp\"));",
+									"",
+									"// test whether temperature is of type number",
+									"pm.test(\"Temperatures are of type number\", () => {",
+									"    pm.expect(temperature).to.be.a(\"number\");",
+									"})",
+									"",
+									"// test whether temperature is between lowestTemp and highestTemp",
+									"pm.test(\"Temperature is in a sensible range\", () => {",
+									"    pm.expect(temperature).to.be.at.least(lowestTemp);",
+									"    pm.expect(temperature).to.be.at.most(highestTemp);",
+									"})",
+									"",
+									"console.log(`Temperature in ${city} is ${temperature} °F`)",
+									"",
+									"// do not proceed with next request",
+									"postman.setNextRequest(null)",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"_postman_id": "7dd3f552-facc-4ed2-b623-8b6256770cf9",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/weather?q={{secondCity}}&appid={{appid}}&units=imperial",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"weather"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "{{secondCity}}",
+									"description": "**City name**. *Example: London*. You can call by city name, or by city name and country code. The API responds with a list of results that match a searching word. For the query value, type the city name and optionally the country code divided by a comma; use ISO 3166 country codes."
+								},
+								{
+									"key": "appid",
+									"value": "{{appid}}",
+									"description": "**API Key**. *Example: 52a17d91b3ed0697b05a7dd6fdc708c4*. API Keys are associated with developer accounts."
+								},
+								{
+									"key": "units",
+									"value": "imperial"
+								}
+							]
+						},
+						"description": "Access current weather data for the second city, test whether temperature is in reasonable range and tells Postman not to run any further request."
+					},
+					"response": [
+						{
+							"id": "3ebbb883-21ea-44f1-9d91-c87ceadc6cb9",
+							"name": "Get weather for Bangalore",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/weather?q={{secondCity}}&appid={{appid}}&units=imperial",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"weather"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "{{secondCity}}",
+											"description": "**City name**. *Example: London*. You can call by city name, or by city name and country code. The API responds with a list of results that match a searching word. For the query value, type the city name and optionally the country code divided by a comma; use ISO 3166 country codes."
+										},
+										{
+											"key": "appid",
+											"value": "{{appid}}",
+											"description": "**API Key**. *Example: 52a17d91b3ed0697b05a7dd6fdc708c4*. API Keys are associated with developer accounts."
+										},
+										{
+											"key": "units",
+											"value": "imperial"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "openresty"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 02 Sep 2022 17:05:56 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "478"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Cache-Key",
+									"value": "/data/2.5/weather?q=bangalore&units=imperial"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET, POST"
+								}
+							],
+							"cookie": [],
+							"responseTime": null,
+							"body": "{\n    \"coord\": {\n        \"lon\": 77.6033,\n        \"lat\": 12.9762\n    },\n    \"weather\": [\n        {\n            \"id\": 802,\n            \"main\": \"Clouds\",\n            \"description\": \"scattered clouds\",\n            \"icon\": \"03n\"\n        }\n    ],\n    \"base\": \"stations\",\n    \"main\": {\n        \"temp\": 75.38,\n        \"feels_like\": 76.51,\n        \"temp_min\": 73.04,\n        \"temp_max\": 77.88,\n        \"pressure\": 1014,\n        \"humidity\": 83\n    },\n    \"visibility\": 6000,\n    \"wind\": {\n        \"speed\": 3.44,\n        \"deg\": 190\n    },\n    \"clouds\": {\n        \"all\": 40\n    },\n    \"dt\": 1662138300,\n    \"sys\": {\n        \"type\": 2,\n        \"id\": 2040609,\n        \"country\": \"IN\",\n        \"sunrise\": 1662079125,\n        \"sunset\": 1662123630\n    },\n    \"timezone\": 19800,\n    \"id\": 1277333,\n    \"name\": \"Bengaluru\",\n    \"cod\": 200\n}"
+						}
+					]
+				},
+				{
+					"name": "Get weather for London",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "13ce220b-559f-4f3f-be7c-549003afd630",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"let city = pm.variables.get(\"thirdCity\");",
+									"let temperature = pm.response.json().main.temp;",
+									"let lowestTemp = parseInt(pm.variables.get(\"lowestTemp\"));",
+									"let highestTemp = parseInt(pm.variables.get(\"highestTemp\"));",
+									"",
+									"// test whether temperature is of type number",
+									"pm.test(\"Temperatures are of type number\", () => {",
+									"    pm.expect(temperature).to.be.a(\"number\");",
+									"})",
+									"",
+									"// test whether temperature is between lowestTemp and highestTemp",
+									"pm.test(\"Temperature is in a sensible range\", () => {",
+									"    pm.expect(temperature).to.be.at.least(lowestTemp);",
+									"    pm.expect(temperature).to.be.at.most(highestTemp);",
+									"})",
+									"",
+									"console.log(`Temperature in ${city} is ${temperature} °F`)",
+									"",
+									"// do not proceed with next request",
+									"postman.setNextRequest(null)",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"_postman_id": "420e9ffc-5677-4a83-95e3-f57fbaf15588",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/weather?q={{thirdCity}}&appid={{appid}}&units=imperial",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"weather"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "{{thirdCity}}",
+									"description": "**City name**. *Example: London*. You can call by city name, or by city name and country code. The API responds with a list of results that match a searching word. For the query value, type the city name and optionally the country code divided by a comma; use ISO 3166 country codes."
+								},
+								{
+									"key": "appid",
+									"value": "{{appid}}",
+									"description": "**API Key**. *Example: 52a17d91b3ed0697b05a7dd6fdc708c4*. API Keys are associated with developer accounts."
+								},
+								{
+									"key": "units",
+									"value": "imperial"
+								}
+							]
+						},
+						"description": "Access current weather data for the third city, test whether temperature is in reasonable range and tells Postman not to run any further request."
+					},
+					"response": [
+						{
+							"id": "214a9cfa-8558-4165-9810-0f641a969e2e",
+							"name": "Get weather for London",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/weather?q={{thirdCity}}&appid={{appid}}&units=imperial",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"weather"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "{{thirdCity}}",
+											"description": "**City name**. *Example: London*. You can call by city name, or by city name and country code. The API responds with a list of results that match a searching word. For the query value, type the city name and optionally the country code divided by a comma; use ISO 3166 country codes."
+										},
+										{
+											"key": "appid",
+											"value": "{{appid}}",
+											"description": "**API Key**. *Example: 52a17d91b3ed0697b05a7dd6fdc708c4*. API Keys are associated with developer accounts."
+										},
+										{
+											"key": "units",
+											"value": "imperial"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "openresty"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 02 Sep 2022 17:06:06 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "471"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Cache-Key",
+									"value": "/data/2.5/weather?q=london&units=imperial"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET, POST"
+								}
+							],
+							"cookie": [],
+							"responseTime": null,
+							"body": "{\n    \"coord\": {\n        \"lon\": -0.1257,\n        \"lat\": 51.5085\n    },\n    \"weather\": [\n        {\n            \"id\": 804,\n            \"main\": \"Clouds\",\n            \"description\": \"overcast clouds\",\n            \"icon\": \"04d\"\n        }\n    ],\n    \"base\": \"stations\",\n    \"main\": {\n        \"temp\": 72.03,\n        \"feels_like\": 72.18,\n        \"temp_min\": 69.62,\n        \"temp_max\": 75,\n        \"pressure\": 1009,\n        \"humidity\": 69\n    },\n    \"visibility\": 10000,\n    \"wind\": {\n        \"speed\": 6.91,\n        \"deg\": 110\n    },\n    \"clouds\": {\n        \"all\": 91\n    },\n    \"dt\": 1662138162,\n    \"sys\": {\n        \"type\": 2,\n        \"id\": 2075535,\n        \"country\": \"GB\",\n        \"sunrise\": 1662095676,\n        \"sunset\": 1662144380\n    },\n    \"timezone\": 3600,\n    \"id\": 2643743,\n    \"name\": \"London\",\n    \"cod\": 200\n}"
+						}
+					]
+				}
+			],
+			"_postman_id": "46595135-1b6b-48af-b4f1-2508e6341649",
+			"description": "**Examine the three requests and their tests:**\n\nAs described in the overview documentation of this collection, we decided to show you how to make use of conditional requests by [applying](https://learning.postman.com/docs/running-collections/building-workflows/) the dynamic request workflow pattern.\n\nYou can inspect the code that is calling `postman.setNextRequest` dynamically, if you navigate to the *Tests* tab of the first request (*Get weather for San Francisco*). From the two following requests, only one will be executed. Both requests contain a test script that will make sure no additional requests will be executed afterwards by calling postman.setNextRequest(null).\n\nAll three requests retrieve variable values using the scope agnostic `pm.variables.get` call so that you could also switch from collection variables to an environment or mix and match if you wanted to. The test scripts also contain assertions to check the response status code (200), data type of the temperature and a temperature range sanity check. The actual temperature parsing of the response body is done using the `pm.response.json()`method. More information on how to write Postman tests can be found [here](https://learning.postman.com/docs/writing-scripts/test-scripts/).\n\n**Run the collection or folder**:\n\nNow that you have examined the three requests with tests, you can test step through and run the folder by tabbing through each of the requests and hitting **Send**.\n\nIn order to run the second or third request conditionally based on the response of the first request, use the [collection runner](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/). Navigate to the `Run a collection` item in the context menu of your collection or select `Run folder` from the context menu of this folder. You should only see two of the three requests being executed based on the temperature from the first request. Please also have a look at the [console](https://learning.postman.com/docs/monitoring-your-api/viewing-monitor-results/#console-log) for additional output.\n\n![](https://content.pstmn.io/cdb7e91c-533b-4b70-8ffe-4fe51fe83d72/cnVuLWNvbGxlY3Rpb24ucG5n)\n\n**Experiment**:\n\nFeel free to change the current value of *tempThreshold* to trigger a different request flow. If you modified the values for *highestTemp* or *lowestTemp you can also make the temperature sanity check fail.*\n\nIf you changed the value of the *secondCity* or *thirdCity* you would also need to rename the request names accordingly as their name is used by `postman.setNextRequest`. You could change this to more generic request names or investigate the alternative approaches outlined in the summary.\n\nHave fun and looking forward to your feedback!",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						],
+						"id": "493fcedc-18be-4810-9b1a-7d0e696e27ad"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						],
+						"id": "7e2b006f-f56a-426b-b0ce-0755d8c5418f"
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "c3476446-e340-4364-abab-4398b0422401",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "2d982fbd-d631-4256-ab5e-4b8186749a83",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "5c7a22ca-b984-4ad6-bfcd-412dfd4253f4",
+			"key": "firstCity",
+			"value": "San Francisco",
+			"type": "string"
+		},
+		{
+			"id": "52ae13f4-7b78-4c53-b43f-7d46e0bded5c",
+			"key": "appid",
+			"value": "eb7883a279ebd280f1841f68d9b68b5d",
+			"type": "string"
+		},
+		{
+			"id": "0265d1a4-a2a7-4b06-a2bc-5ce35fc20f85",
+			"key": "lowestTemp",
+			"value": "-40",
+			"type": "string"
+		},
+		{
+			"id": "f14bd49b-e09a-42f7-94c8-ff69e05afe61",
+			"key": "highestTemp",
+			"value": "140",
+			"type": "string"
+		},
+		{
+			"id": "3232d751-2ecd-4165-8751-a5e659dc57f4",
+			"key": "tempThreshold",
+			"value": "60",
+			"type": "string"
+		},
+		{
+			"id": "f200d7b3-a0bd-480b-beef-b7d759d10e47",
+			"key": "secondCity",
+			"value": "Bangalore",
+			"type": "string"
+		},
+		{
+			"id": "4cfd1758-4980-4363-9344-0f2b4658ca4a",
+			"key": "thirdCity",
+			"value": "London",
+			"type": "string"
+		},
+		{
+			"id": "4f591fc6-1f8b-4e72-b984-b82227d0ad50",
+			"key": "baseUrl",
+			"value": "http://api.openweathermap.org/data/2.5",
+			"type": "string"
+		}
+	]
+}
