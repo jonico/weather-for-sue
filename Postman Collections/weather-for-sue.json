@@ -17,7 +17,7 @@
 							"script": {
 								"id": "13ce220b-559f-4f3f-be7c-549003afd630",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is ok (200)\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
@@ -521,48 +521,48 @@
 	],
 	"variable": [
 		{
-			"id": "eb9e3ac6-947e-47e6-8e86-8516574c5d63",
+			"id": "b9d75cf5-79ca-4602-ba90-bacbd19f5304",
 			"key": "firstCity",
 			"value": "San Francisco"
 		},
 		{
-			"id": "90da210d-537d-478f-87f5-48454937829d",
+			"id": "25e354ff-3d5e-4346-8b23-760dd202ce4b",
 			"key": "appid",
 			"value": "eb7883a279ebd280f1841f68d9b68b5d",
 			"type": "string"
 		},
 		{
-			"id": "66109a95-731c-4d42-99b3-31fe6b9f6020",
+			"id": "b6b1bb2e-9da7-4831-9eef-5cc5692645f5",
 			"key": "lowestTemp",
 			"value": "-40",
 			"type": "string"
 		},
 		{
-			"id": "023ffa73-d53b-4b9a-ba8d-1389d18370ea",
+			"id": "99accf71-1e8c-4f46-ad4f-91f4a1d62b57",
 			"key": "highestTemp",
 			"value": "140",
 			"type": "string"
 		},
 		{
-			"id": "07de1067-d5f5-4860-ac56-f8514de58f19",
+			"id": "cee535bb-5702-4e4e-8de1-41331fca7f42",
 			"key": "tempThreshold",
 			"value": "60",
 			"type": "string"
 		},
 		{
-			"id": "0c2fbec6-4f75-4d54-9479-1a1b981edf65",
+			"id": "bb651e33-b195-496e-af35-894795b73da0",
 			"key": "secondCity",
 			"value": "Bangalore",
 			"type": "string"
 		},
 		{
-			"id": "cef01897-8d24-4043-843d-cf1ac974eb7d",
+			"id": "6decd901-34be-4313-8a65-d816a4c02165",
 			"key": "thirdCity",
 			"value": "London",
 			"type": "string"
 		},
 		{
-			"id": "9cc83e45-a4f4-44a8-9d23-98fb5f791065",
+			"id": "ea99d25f-176c-44a7-bf8b-46a53d89b5dc",
 			"key": "baseUrl",
 			"value": "http://api.openweathermap.org/data/2.5",
 			"type": "string"
