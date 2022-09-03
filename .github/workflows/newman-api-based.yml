@@ -16,4 +16,5 @@ jobs:
     - name: Run Newman
       uses: matt-ball/newman-action@v1.0.4
       with:
-        collection: "Postman Collections/weather-for-sue.json"
+        apiKey: ${{ secrets.POSTMAN_API_KEY }}
+        collection: "22874692-840e614a-d38c-4a05-b152-0701fab17fba"
