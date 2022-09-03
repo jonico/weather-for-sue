@@ -16,6 +16,5 @@ jobs:
     - name: Run Newman
       uses: matt-ball/newman-action@v1.0.4
       with:
-        workingDir: "Postman Collections"
-        collection: "weather-for-sue.json"
+        collection: "Postman Collections/weather-for-sue.json"
 
