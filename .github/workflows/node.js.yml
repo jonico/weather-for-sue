@@ -13,8 +13,11 @@ jobs:
   test-apis:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2.4.2
     - name: Run Newman
       uses: matt-ball/newman-action@v1.0.4
       with:
-        collection: "Postman Collections/weather-for-sue.json"
+        collection: "weather-for-sue.json"
+        workingDir: "Postman Collections"
 
