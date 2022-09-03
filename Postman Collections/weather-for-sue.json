@@ -46,10 +46,10 @@
 									"var message",
 									"",
 									"if (temperature > tempThreshold) {",
-									"    message = `Temperature is above threshold of ${tempThreshold} °F, this is quite hot, checking weather in ${secondCity} next ...`",
+									"    message = `Temperature is above threshold of ${tempThreshold} °F, this is quite hot, hence checking weather in ${secondCity} next ...`",
 									"    postman.setNextRequest(`Get weather for ${secondCity}`)",
 									"} else {",
-									"    message = `Temperature is below threshold of ${tempThreshold} °F, this is quite cold, checking weather in ${thirdCity} next ...`",
+									"    message = `Temperature is below threshold of ${tempThreshold} °F, this is quite cold, hence checking weather in ${thirdCity} next ...`",
 									"    postman.setNextRequest(`Get weather for ${thirdCity}`)",
 									"}",
 									"",
@@ -61,7 +61,7 @@
 							}
 						}
 					],
-					"_postman_id": "420b3197-ba61-4a0e-8bb0-947e32048611",
+					"id": "420b3197-ba61-4a0e-8bb0-947e32048611",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -210,7 +210,7 @@
 							}
 						}
 					],
-					"_postman_id": "7dd3f552-facc-4ed2-b623-8b6256770cf9",
+					"id": "7dd3f552-facc-4ed2-b623-8b6256770cf9",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -359,7 +359,7 @@
 							}
 						}
 					],
-					"_postman_id": "420e9ffc-5677-4a83-95e3-f57fbaf15588",
+					"id": "420e9ffc-5677-4a83-95e3-f57fbaf15588",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -471,7 +471,7 @@
 					]
 				}
 			],
-			"_postman_id": "46595135-1b6b-48af-b4f1-2508e6341649",
+			"id": "46595135-1b6b-48af-b4f1-2508e6341649",
 			"description": "**Examine the three requests and their tests:**\n\nAs described in the overview documentation of this collection, we decided to show you how to make use of conditional requests by [applying](https://learning.postman.com/docs/running-collections/building-workflows/) the dynamic request workflow pattern.\n\nYou can inspect the code that is calling `postman.setNextRequest` dynamically, if you navigate to the *Tests* tab of the first request (*Get weather for San Francisco*). From the two following requests, only one will be executed. Both requests contain a test script that will make sure no additional requests will be executed afterwards by calling postman.setNextRequest(null).\n\nAll three requests retrieve variable values using the scope agnostic `pm.variables.get` call so that you could also switch from collection variables to an environment or mix and match if you wanted to. The test scripts also contain assertions to check the response status code (200), data type of the temperature and a temperature range sanity check. The actual temperature parsing of the response body is done using the `pm.response.json()`method. More information on how to write Postman tests can be found [here](https://learning.postman.com/docs/writing-scripts/test-scripts/).\n\n**Run the collection or folder**:\n\nNow that you have examined the three requests with tests, you can test step through and run the folder by tabbing through each of the requests and hitting **Send**.\n\nIn order to run the second or third request conditionally based on the response of the first request, use the [collection runner](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/). Navigate to the `Run a collection` item in the context menu of your collection or select `Run folder` from the context menu of this folder. You should only see two of the three requests being executed based on the temperature from the first request. Please also have a look at the [console](https://learning.postman.com/docs/monitoring-your-api/viewing-monitor-results/#console-log) for additional output.\n\n![](https://content.pstmn.io/cdb7e91c-533b-4b70-8ffe-4fe51fe83d72/cnVuLWNvbGxlY3Rpb24ucG5n)\n\n**Experiment**:\n\nFeel free to change the current value of *tempThreshold* to trigger a different request flow. If you modified the values for *highestTemp* or *lowestTemp you can also make the temperature sanity check fail.*\n\nIf you changed the value of the *secondCity* or *thirdCity* you would also need to rename the request names accordingly as their name is used by `postman.setNextRequest`. You could change this to more generic request names or investigate the alternative approaches outlined in the summary.\n\nHave fun and looking forward to your feedback!",
 			"event": [
 				{
@@ -521,49 +521,48 @@
 	],
 	"variable": [
 		{
-			"id": "5c7a22ca-b984-4ad6-bfcd-412dfd4253f4",
+			"id": "eb9e3ac6-947e-47e6-8e86-8516574c5d63",
 			"key": "firstCity",
-			"value": "San Francisco",
-			"type": "string"
+			"value": "San Francisco"
 		},
 		{
-			"id": "52ae13f4-7b78-4c53-b43f-7d46e0bded5c",
+			"id": "90da210d-537d-478f-87f5-48454937829d",
 			"key": "appid",
 			"value": "eb7883a279ebd280f1841f68d9b68b5d",
 			"type": "string"
 		},
 		{
-			"id": "0265d1a4-a2a7-4b06-a2bc-5ce35fc20f85",
+			"id": "66109a95-731c-4d42-99b3-31fe6b9f6020",
 			"key": "lowestTemp",
 			"value": "-40",
 			"type": "string"
 		},
 		{
-			"id": "f14bd49b-e09a-42f7-94c8-ff69e05afe61",
+			"id": "023ffa73-d53b-4b9a-ba8d-1389d18370ea",
 			"key": "highestTemp",
 			"value": "140",
 			"type": "string"
 		},
 		{
-			"id": "3232d751-2ecd-4165-8751-a5e659dc57f4",
+			"id": "07de1067-d5f5-4860-ac56-f8514de58f19",
 			"key": "tempThreshold",
 			"value": "60",
 			"type": "string"
 		},
 		{
-			"id": "f200d7b3-a0bd-480b-beef-b7d759d10e47",
+			"id": "0c2fbec6-4f75-4d54-9479-1a1b981edf65",
 			"key": "secondCity",
 			"value": "Bangalore",
 			"type": "string"
 		},
 		{
-			"id": "4cfd1758-4980-4363-9344-0f2b4658ca4a",
+			"id": "cef01897-8d24-4043-843d-cf1ac974eb7d",
 			"key": "thirdCity",
 			"value": "London",
 			"type": "string"
 		},
 		{
-			"id": "4f591fc6-1f8b-4e72-b984-b82227d0ad50",
+			"id": "9cc83e45-a4f4-44a8-9d23-98fb5f791065",
 			"key": "baseUrl",
 			"value": "http://api.openweathermap.org/data/2.5",
 			"type": "string"
