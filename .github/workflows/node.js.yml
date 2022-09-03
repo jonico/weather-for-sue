@@ -11,6 +11,10 @@ on:
 
 jobs:
   build:
-    uses: matt-ball/newman-action@v1.0.4
-    with:
-      workingDir: "Postman Collections"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run Newman
+      uses: matt-ball/newman-action@v1.0.4
+      with:
+        workingDir: "Postman Collections"
+
