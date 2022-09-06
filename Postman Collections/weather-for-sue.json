@@ -501,7 +501,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "c3476446-e340-4364-abab-4398b0422401",
+				"id": "10acf7a2-1f0d-479d-8648-ded004b695b8",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -511,7 +511,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "2d982fbd-d631-4256-ab5e-4b8186749a83",
+				"id": "53686f99-f825-42ea-8e2a-c63211178450",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -521,48 +521,48 @@
 	],
 	"variable": [
 		{
-			"id": "b9d75cf5-79ca-4602-ba90-bacbd19f5304",
+			"id": "1d48f1f5-1985-4980-91a8-a11b62f6d673",
 			"key": "firstCity",
 			"value": "San Francisco"
 		},
 		{
-			"id": "25e354ff-3d5e-4346-8b23-760dd202ce4b",
+			"id": "a2ad28f7-b316-461f-86f0-0199e6b1cae5",
 			"key": "appid",
 			"value": "eb7883a279ebd280f1841f68d9b68b5d",
 			"type": "string"
 		},
 		{
-			"id": "b6b1bb2e-9da7-4831-9eef-5cc5692645f5",
+			"id": "a0c83939-e7bd-4649-bf09-4fc28d916b54",
 			"key": "lowestTemp",
 			"value": "-40",
 			"type": "string"
 		},
 		{
-			"id": "99accf71-1e8c-4f46-ad4f-91f4a1d62b57",
+			"id": "57e96516-d207-4812-90db-837553c5fd21",
 			"key": "highestTemp",
 			"value": "140",
 			"type": "string"
 		},
 		{
-			"id": "cee535bb-5702-4e4e-8de1-41331fca7f42",
+			"id": "873596c7-8d8c-440c-a424-41f5a269f9b5",
 			"key": "tempThreshold",
 			"value": "60",
 			"type": "string"
 		},
 		{
-			"id": "bb651e33-b195-496e-af35-894795b73da0",
+			"id": "604295e2-e057-4750-9116-22980ab2e88f",
 			"key": "secondCity",
 			"value": "Bangalore",
 			"type": "string"
 		},
 		{
-			"id": "6decd901-34be-4313-8a65-d816a4c02165",
+			"id": "f1023059-cde1-44b1-a21c-fe74493b8765",
 			"key": "thirdCity",
 			"value": "London",
 			"type": "string"
 		},
 		{
-			"id": "ea99d25f-176c-44a7-bf8b-46a53d89b5dc",
+			"id": "e637973f-63ef-4b09-b7e3-e154f324ae43",
 			"key": "baseUrl",
 			"value": "http://api.openweathermap.org/data/2.5",
 			"type": "string"
