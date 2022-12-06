@@ -18,4 +18,4 @@ jobs:
       with:
         apiKey: ${{ secrets.POSTMAN_API_KEY }}
         collection: "22874692-840e614a-d38c-4a05-b152-0701fab17fba"
-        reporters: '["json,cli"]'
+        reporters: '["json","cli"]'
